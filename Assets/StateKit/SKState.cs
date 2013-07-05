@@ -3,11 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public abstract class SKState<T>
+public abstract class SKState<T,U>
 {
 	internal int mecanimStateHash;
-	protected SKStateMachine<T> _machine;
+	protected SKStateMachine<T,U> _machine;
 	protected T _context;
+	virtual public U stateId
+	{
+		get { throw new System.Exception( "stateId property not defined in child class" ); }
+	}
 	
 	
 	public SKState()
@@ -30,7 +34,7 @@ public abstract class SKState<T>
 	}
 
 	
-	public void setMachineAndContext( SKStateMachine<T> machine, T context )
+	public void setMachineAndContext( SKStateMachine<T,U> machine, T context )
 	{
 		_machine = machine;
 		_context = context;

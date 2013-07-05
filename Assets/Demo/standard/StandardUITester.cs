@@ -2,9 +2,15 @@ using UnityEngine;
 using System.Collections;
 
 
+public enum StandardDemoStates
+{
+	Patrolling,
+	Chasing
+}
+
 public class StandardUITester : MonoBehaviour
 {
-	private SKStateMachine<SomeClass> _machine;
+	private SKStateMachine<SomeClass,StandardDemoStates> _machine;
 	
 	
 	void Start()
@@ -13,7 +19,8 @@ public class StandardUITester : MonoBehaviour
 		var someClass = new SomeClass();
 		
 		// the initial state has to be passed to the constructor
-		_machine = new SKStateMachine<SomeClass>( someClass, new PatrollingState() );
+		_machine = new SKStateMachine<SomeClass,StandardDemoStates>( someClass, new PatrollingState() );
+		_machine.addState( new ChasingState() );
 	}
 	
 	
@@ -26,9 +33,9 @@ public class StandardUITester : MonoBehaviour
 	void OnGUI()
 	{
 		if( GUILayout.Button( "Patrolling State" ) )
-			_machine.changeState<PatrollingState>();
+			_machine.changeState( StandardDemoStates.Patrolling );
 		
 		if( GUILayout.Button( "Chasing State" ) )
-			_machine.changeState<ChasingState>();
+			_machine.changeState( StandardDemoStates.Chasing );
 	}
 }

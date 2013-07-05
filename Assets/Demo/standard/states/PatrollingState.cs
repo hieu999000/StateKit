@@ -3,8 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class PatrollingState : SKState<SomeClass>
+[System.Serializable]
+public class PatrollingState : SKState<SomeClass,StandardDemoStates>
 {
+	override public StandardDemoStates stateId
+	{
+		get { return StandardDemoStates.Patrolling; }
+	}
+	
+
 	public override void begin()
 	{
 		Debug.Log( "started patrolling" );

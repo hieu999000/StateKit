@@ -4,52 +4,39 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class SKStateMachine<T>
+public class SKStateMachine<T,U>
 {
 	protected T _context;
 	#pragma warning disable
 	public event Action onStateChanged;
 	#pragma warning restore
 
-	public SKState<T> currentState { get { return _currentState; } }
+	public SKState<T,U> currentState { get { return _currentState; } }
 
 
-	private Dictionary<System.Type, SKState<T>> _states = new Dictionary<System.Type, SKState<T>>();
-	private SKState<T> _currentState;
+	private Dictionary<U,SKState<T,U>> _states = new Dictionary<U,SKState<T,U>>();
+	private SKState<T,U> _currentState;
 	private Animator _animator;
 
 
-	public SKStateMachine( T context, SKState<T> initialState )
+	public SKStateMachine( T context, SKState<T,U> initialState )
 	{
 		this._context = context;
 
 		// setup our initial state
 		initialState.setMachineAndContext( this, context );
-		_states[initialState.GetType()] = initialState;
+		_states[initialState.stateId] = initialState;
 		_currentState = initialState;
 		_currentState.begin();
-	}
-
-
-	private SKState<T> getOrCreate( System.Type type )
-	{
-		if( _states.ContainsKey( type ) )
-			return _states[type];
-
-		var state = Activator.CreateInstance( type ) as SKState<T>;
-		state.setMachineAndContext( this, _context );
-		_states.Add( type, state );
-
-		return state;
 	}
 
 
 	/// <summary>
 	/// adds the state to the machine
 	/// </summary>
-	public void addState( SKState<T> state )
+	public void addState( SKState<T,U> state )
 	{
-		_states[state.GetType()] = state;
+		_states[state.stateId] = state;
 		state.setMachineAndContext( this, _context );
 	}
 
@@ -61,11 +48,10 @@ public class SKStateMachine<T>
 	}
 
 
-	public virtual void changeState<R>() where R : SKState<T>
+	public virtual void changeState( U newStateId )
 	{
 		// avoid changing to the same state
-		var newType = typeof( R );
-		if( _currentState.GetType() == newType )
+		if( _currentState.stateId.Equals( newStateId ) )
 			return;
 
 		// only call end if we have a currentState
@@ -73,7 +59,7 @@ public class SKStateMachine<T>
 			_currentState.end();
 
 		// swap states and call begin
-		_currentState = getOrCreate( newType );
+		_currentState = _states[newStateId];
 		_currentState.begin();
 
 		// fire the changed event if we have a listener

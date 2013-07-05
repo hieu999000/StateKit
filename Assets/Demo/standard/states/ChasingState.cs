@@ -3,8 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class ChasingState : SKState<SomeClass>
+[System.Serializable]
+public class ChasingState : SKState<SomeClass,StandardDemoStates>
 {
+	override public StandardDemoStates stateId
+	{
+		get { return StandardDemoStates.Chasing; }
+	}
+	
+	
 	public override void begin()
 	{
 		Debug.Log( "started chasing" );
