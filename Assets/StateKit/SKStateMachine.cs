@@ -12,7 +12,7 @@ public class SKStateMachine<T,U>
 	#pragma warning restore
 
 	public SKState<T,U> currentState { get { return _currentState; } }
-
+	public SKState<T,U> previousState;
 
 	private Dictionary<U,SKState<T,U>> _states = new Dictionary<U,SKState<T,U>>();
 	private SKState<T,U> _currentState;
@@ -59,6 +59,7 @@ public class SKStateMachine<T,U>
 			_currentState.end();
 
 		// swap states and call begin
+		previousState = _currentState;
 		_currentState = _states[newStateId];
 		_currentState.begin();
 
