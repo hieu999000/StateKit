@@ -16,7 +16,6 @@ public class SKStateMachine<T,U>
 
 	private Dictionary<U,SKState<T,U>> _states = new Dictionary<U,SKState<T,U>>();
 	private SKState<T,U> _currentState;
-	private Animator _animator;
 
 
 	public SKStateMachine( T context, SKState<T,U> initialState )
